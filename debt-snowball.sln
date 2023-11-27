@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debt-snowball", "debt-snowball\debt-snowball.csproj", "{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debt-snowball.Client", "debt-snowball.Client\debt-snowball.Client.csproj", "{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9BBB278-DD6B-4A9D-A7CF-B55591B6FFD6}
+	EndGlobalSection
+EndGlobal
