@@ -7,13 +7,45 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
-@inject ApplicationDbContext DbContext // Assuming you have a DbContext
+@inject ApplicationDbContext DbContext
 
 <PageTitle>User Debts</PageTitle>
 
 <h1>Your Debts</h1>
 
 @user?.Email hello friend
+
+@if (debts != null && debts.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Rate</th>
+                <th>Balance</th>
+                <th>Minimum Payment</th>
+                <th>Due Day</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var debt in debts)
+            {
+                <tr>
+                    <td>@debt.Name</td>
+                    <td>@debt.Rate</td>
+                    <td>@debt.Balance</td>
+                    <td>@debt.MinimumPayment</td>
+                    <td>@debt.DueDay</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No debts found.</p>
+}
+
 
 <!-- Debt Submission Form -->
 <EditForm Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm">
@@ -44,6 +76,7 @@
 </EditForm>
 
 @code {
+    private List<Debt> debts;
     private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;
@@ -57,8 +90,7 @@
     protected override async Task OnInitializedAsync()
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+        debts = DbContext.Debts.Where(d => d.User == user).ToList();
     }
 
     private async Task HandleSubmit()
@@ -75,8 +107,7 @@
 
         DbContext.Debts.Add(newDebt);
         await DbContext.SaveChangesAsync();
-
-        // Clear form or show success message
+        debts = DbContext.Debts.Where(d => d.User == user).ToList();
     }
 
     private sealed class DebtInputModel
