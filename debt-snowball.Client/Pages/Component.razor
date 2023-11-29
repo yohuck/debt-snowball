@@ -1,0 +1,19 @@
+﻿@page "/debt"
+
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+@rendermode InteractiveAuto
+
+<PageTitle>Credit Cards</PageTitle>
+
+<h1>Your Debt</h1>
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name!
+</AuthorizeView>
+
+
+@code {
+
+}

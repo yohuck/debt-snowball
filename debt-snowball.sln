@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debt-snowball", "debt-snowball\debt-snowball.csproj", "{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "debt-snowball", "debt-snowball\debt-snowball.csproj", "{9D7357B6-2B1C-463F-8E63-F29CC2AF1DC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debt-snowball.Client", "debt-snowball.Client\debt-snowball.Client.csproj", "{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "debt-snowball.Client", "debt-snowball.Client\debt-snowball.Client.csproj", "{8E9C717D-C3F5-4663-8059-4C2FA5DDE793}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
