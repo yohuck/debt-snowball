@@ -26,7 +26,6 @@ namespace debt_snowball.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Other configurations...
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany<Debt>(a => a.Debts)
                 .WithOne(d => d.User)

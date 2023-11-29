@@ -1,0 +1,103 @@
+﻿@page "/debt"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using debt_snowball.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IdentityRedirectManager RedirectManager
+@inject ApplicationDbContext DbContext // Assuming you have a DbContext
+
+<PageTitle>User Debts</PageTitle>
+
+<h1>Your Debts</h1>
+
+@user?.Email hello friend
+
+<!-- Debt Submission Form -->
+<EditForm Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm">
+    <DataAnnotationsValidator />
+
+    <div>
+        <label for="name">Debt Name:</label>
+        <InputText id="name" @bind-Value="Input.Name" />
+    </div>
+    <div>
+        <label for="rate">Interest Rate (%):</label>
+        <InputNumber id="rate" @bind-Value="Input.Rate" />
+    </div>
+    <div>
+        <label for="balance">Balance:</label>
+        <InputNumber id="balance" @bind-Value="Input.Balance" />
+    </div>
+    <div>
+        <label for="minPayment">Minimum Payment:</label>
+        <InputNumber id="minPayment" @bind-Value="Input.MinimumPayment" />
+    </div>
+    <div>
+        <label for="dueDay">Due Day (Day of the Month):</label>
+        <InputNumber id="dueDay" @bind-Value="Input.DueDay" />
+    </div>
+
+    <button type="submit">Add Debt</button>
+</EditForm>
+
+@code {
+    private ApplicationUser user = default!;
+    private string? username;
+    private string? phoneNumber;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private DebtInputModel Input { get; set; } = new DebtInputModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        username = await UserManager.GetUserNameAsync(user);
+        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+    }
+
+    private async Task HandleSubmit()
+    {
+        var newDebt = new Debt
+            {
+                Name = Input.Name,
+                Rate = Input.Rate,
+                Balance = Input.Balance,
+                MinimumPayment = Input.MinimumPayment,
+                DueDay = Input.DueDay,
+                User = user
+            };
+
+        DbContext.Debts.Add(newDebt);
+        await DbContext.SaveChangesAsync();
+
+        // Clear form or show success message
+    }
+
+    private sealed class DebtInputModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Rate { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Balance { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double MinimumPayment { get; set; }
+
+        [Required]
+        [Range(1, 31)]
+        public int DueDay { get; set; } // Day of the month for the due date
+    }
+}
