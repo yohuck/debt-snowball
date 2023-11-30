@@ -1,0 +1,69 @@
+﻿@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+
+@using debt_snowball.Data
+@inject ApplicationDbContext DbContext
+
+
+<div style="display:flex;flex-direction:column;gap:0.5rem;">
+    <label for="extraPayment-slider" style="width:200px;display:flex;justify-content:space-between;">
+        Extra Payment<output for="extraPayment-slider">$ @extraPayment </output>
+    </label>
+    <input type="range" class="form-range" style="max-width:200px;" id="extraPayment-slider" min="0" max="1000" step="10" @bind="extraPayment"  />
+</div>
+
+@if (Debts != null && Debts.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Rate</th>
+                <th>Balance</th>
+                <th>Minimum Payment</th>
+                <th>Due Day</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var debt in Debts)
+            {
+                <tr>
+                    <td>@debt.Name</td>
+                    <td>@debt.Rate</td>
+                    <td>@debt.Balance</td>
+                    <td>@debt.MinimumPayment</td>
+                    <td>@debt.DueDay</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No debts found.</p>
+}
+
+
+
+@code {
+    [Parameter]
+    public string user { get; set; } = default!;
+
+    [Parameter]
+    public int extraPayment { get; set; } = 0;
+
+    [Parameter]
+    public string Label { get; set; } = "Extra Payment";
+
+
+    public List<Debt> Debts { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (user != null)
+        {
+            Debts = DbContext.Debts.Where(d => d.User.Id == user).ToList();
+        }
+
+    }
+}

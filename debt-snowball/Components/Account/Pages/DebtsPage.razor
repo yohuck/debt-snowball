@@ -1,7 +1,11 @@
 ﻿@page "/debt"
+
+
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using debt_snowball.Data
+
+
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -13,33 +17,20 @@
 
 <h1>Your Debts</h1>
 
-@user?.Email hello friend
+@user?.Email
+
+
+
+
+    
+
+
+
 
 @if (debts != null && debts.Any())
 {
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Rate</th>
-                <th>Balance</th>
-                <th>Minimum Payment</th>
-                <th>Due Day</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var debt in debts)
-            {
-                <tr>
-                    <td>@debt.Name</td>
-                    <td>@debt.Rate</td>
-                    <td>@debt.Balance</td>
-                    <td>@debt.MinimumPayment</td>
-                    <td>@debt.DueDay</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <UserDebts extraPayment="@extraPayment" user="@user?.Id"  ></UserDebts>
+    
 }
 else
 {
@@ -81,6 +72,9 @@ else
     private string? username;
     private string? phoneNumber;
 
+    [Parameter]
+    public int extraPayment { get; set; } = 0; 
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
@@ -90,7 +84,11 @@ else
     protected override async Task OnInitializedAsync()
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        debts = DbContext.Debts.Where(d => d.User == user).ToList();
+        if(user != null)
+        {
+            debts = DbContext.Debts.Where(d => d.User == user).ToList();
+        }
+
     }
 
     private async Task HandleSubmit()
@@ -109,6 +107,25 @@ else
         await DbContext.SaveChangesAsync();
         debts = DbContext.Debts.Where(d => d.User == user).ToList();
     }
+
+    //update the label for the slider
+    private void updateSliderLabel()
+        {
+            extraPayment = Convert.ToInt32(extraPayment);
+            Console.WriteLine(extraPayment);
+        }
+
+    async Task hello()
+    {
+        if (extraPayment != default)
+        {
+            extraPayment = Convert.ToInt32(extraPayment);
+            Console.WriteLine(extraPayment);
+        }
+    }
+   
+
+
 
     private sealed class DebtInputModel
     {
