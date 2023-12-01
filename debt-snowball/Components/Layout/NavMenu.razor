@@ -2,75 +2,77 @@
 
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">debt-snowball</a>
-    </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+<div class="" >
+    <nav class="bg-black flex p-2 gap-5 justify-between">
+
+        <NavLink class="p-1 text-white no-underline" href="" Match="NavLinkMatch.All">
+            <span class="no-underline hover:underline">Debt Snowball</span>
+        </NavLink>
+        <div class="flex gap-2">
+       
+
+         
+
+            <NavLink class="no-underline hover:underline" href="counter">
+                Counter
             </NavLink>
-        </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+
+            <NavLink class="text-white no-underline" href="weather">
+                Weather
             </NavLink>
-        </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+
+
+            <NavLink class="text-white no-underline" href="auth">
+                Auth Required
             </NavLink>
-        </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
 
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+            <AuthorizeView>
+                <Authorized>
+
+                    <NavLink class="text-white no-underline" href="Account/Manage">
+                        @context.User.Identity?.Name
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Debt">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Your Debt
+
+
+                    <NavLink class="text-white no-underline" href="Debt">
+                        Your Debt
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
+
+
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                        <button type="submit" class="">
+                            Logout
                         </button>
                     </form>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+
+                </Authorized>
+                <NotAuthorized>
+
+                    <NavLink class="p-1 text-white no-underline" href="Account/Register">
+                        Register
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+
+
+                    <NavLink class="p-1 text-white no-underline" href="Account/Login">
+                        Login
                     </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
+
+                </NotAuthorized>
+            </AuthorizeView>
+         </div>
+
+      
+
+
+
+       
     </nav>
 </div>
 
