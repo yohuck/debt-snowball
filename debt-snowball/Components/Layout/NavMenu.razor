@@ -5,49 +5,32 @@
 
 
 <div class="" >
-    <nav class="bg-black flex p-2 gap-5 justify-between">
+    <nav class="bg-blue-950 flex p-2 gap-5 justify-between">
 
         <NavLink class="p-1 text-white no-underline" href="" Match="NavLinkMatch.All">
-            <span class="no-underline hover:underline">Debt Snowball</span>
+          <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
         </NavLink>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center text-white mr-4">
        
-
-         
-
-            <NavLink class="no-underline hover:underline" href="counter">
-                Counter
-            </NavLink>
-
-
-            <NavLink class="text-white no-underline" href="weather">
-                Weather
-            </NavLink>
-
-
-
-            <NavLink class="text-white no-underline" href="auth">
-                Auth Required
-            </NavLink>
-
 
             <AuthorizeView>
                 <Authorized>
+                    <NavLink class="no-underline hover:underline" href="Debt">
+                       Your Snowball
+                    </NavLink>
 
-                    <NavLink class="text-white no-underline" href="Account/Manage">
-                        @context.User.Identity?.Name
+                    <NavLink class="no-underline hover:underline" href="Account/Manage">
+                        Profile
                     </NavLink>
 
 
-                    <NavLink class="text-white no-underline" href="Debt">
-                        Your Debt
-                    </NavLink>
+                    
 
 
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="">
+                        <button type="submit" class="hover:underline">
                             Logout
                         </button>
                     </form>
