@@ -15,18 +15,11 @@
 
 <PageTitle>User Debts</PageTitle>
 
-<h1>Your Debts</h1>
+<div class="p-4">
+<h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
 
-@user?.Email
-
-
-
-
-    
-
-
-
-
+<div class=" max-w-[1000px] flex flex-col gap-4">
+    <div>
 @if (debts != null && debts.Any())
 {
     <UserDebts extraPayment="@extraPayment" user="@user?.Id"  ></UserDebts>
@@ -36,35 +29,48 @@ else
 {
     <p>No debts found.</p>
 }
+</div>
+
 
 
 <!-- Debt Submission Form -->
-<EditForm Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm">
+<EditForm Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="bg-blue-950 text-white p-4 flex flex-col gap-2 max-w-md items-center md:min-w-[500px]">
     <DataAnnotationsValidator />
+        <h2 class="text-2xl font-extrabold tacking-tight">Add a debt</h2>
 
-    <div>
+    <div class="flex flex-col w-[100%]">
         <label for="name">Debt Name:</label>
-        <InputText id="name" @bind-Value="Input.Name" />
+            <InputText id="name" @bind-Value="Input.Name" class="p-1 text-blue-950"  />
     </div>
-    <div>
+        <div class="flex flex-col w-[100%]">
         <label for="rate">Interest Rate (%):</label>
-        <InputNumber id="rate" @bind-Value="Input.Rate" />
+            <InputNumber id="rate" @bind-Value="Input.Rate" class="p-1 text-blue-950" />
     </div>
-    <div>
+        <div class="flex flex-col w-[100%]">
         <label for="balance">Balance:</label>
-        <InputNumber id="balance" @bind-Value="Input.Balance" />
+            <InputNumber id="balance" @bind-Value="Input.Balance" class="p-1 text-blue-950" />
     </div>
-    <div>
+        <div class="flex flex-col w-[100%]">
         <label for="minPayment">Minimum Payment:</label>
-        <InputNumber id="minPayment" @bind-Value="Input.MinimumPayment" />
+            <InputNumber id="minPayment" @bind-Value="Input.MinimumPayment" class="p-1 text-blue-950" />
     </div>
-    <div>
+        <div class="flex flex-col w-[100%]">
         <label for="dueDay">Due Day (Day of the Month):</label>
-        <InputNumber id="dueDay" @bind-Value="Input.DueDay" />
+            <InputNumber id="dueDay" @bind-Value="Input.DueDay" class="p-1 text-blue-950" />
     </div>
 
-    <button type="submit">Add Debt</button>
+        <button class="inline-flex items-center rounded-md shadow pt-2" type="submit">
+           
+            <span  class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                Add Debt  <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+            </span>  
+        </button>
+        
+            
+      
 </EditForm>
+    </div>
+</div>
 
 @code {
     private List<Debt> debts;
@@ -110,10 +116,10 @@ else
 
     //update the label for the slider
     private void updateSliderLabel()
-        {
-            extraPayment = Convert.ToInt32(extraPayment);
-            Console.WriteLine(extraPayment);
-        }
+    {
+        extraPayment = Convert.ToInt32(extraPayment);
+        Console.WriteLine(extraPayment);
+    }
 
     async Task hello()
     {
@@ -123,29 +129,29 @@ else
             Console.WriteLine(extraPayment);
         }
     }
-   
+
 
 
 
     private sealed class DebtInputModel
     {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = "Chase Sapphire Preferred";
 
         [Required]
         [Range(0, double.MaxValue)]
-        public double Rate { get; set; }
+        public double Rate { get; set; } = 15.99;
 
         [Required]
         [Range(0, double.MaxValue)]
-        public double Balance { get; set; }
+        public double Balance { get; set; } = 1000;
 
         [Required]
         [Range(0, double.MaxValue)]
-        public double MinimumPayment { get; set; }
+        public double MinimumPayment { get; set; } = 25;
 
         [Required]
         [Range(1, 31)]
-        public int DueDay { get; set; } // Day of the month for the due date
+        public int DueDay { get; set; } = 1;
     }
 }

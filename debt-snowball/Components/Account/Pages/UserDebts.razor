@@ -5,7 +5,7 @@
 @inject ApplicationDbContext DbContext
 
 
-<div style="display:flex;flex-direction:column;gap:0.5rem;">
+<div class="my-4" style="display:flex;flex-direction:column;gap:0.5rem;">
     <label for="extraPayment-slider" style="width:200px;display:flex;justify-content:space-between;">
         Extra Payment<output for="extraPayment-slider">$ @extraPayment </output>
     </label>
@@ -14,21 +14,21 @@
 
 @if (Debts != null && Debts.Any())
 {
-    <table>
-        <thead>
+    <table class="table-auto text-xs md:text-lg w-[100%] text-left bg-blue-100 p-8 text-blue-950">
+        <thead class="bg-blue-950 text-gray-200">
             <tr>
-                <th>Name</th>
+                <th class="p-2">Name</th>
                 <th>Rate</th>
                 <th>Balance</th>
-                <th>Minimum Payment</th>
+                <th>Min Payment</th>
                 <th>Due Day</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="[&>*:nth-child(even)]:bg-gray-100">
             @foreach (var debt in Debts)
             {
                 <tr>
-                    <td>@debt.Name</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">@debt.Name</td>
                     <td>@debt.Rate</td>
                     <td>@debt.Balance</td>
                     <td>@debt.MinimumPayment</td>
