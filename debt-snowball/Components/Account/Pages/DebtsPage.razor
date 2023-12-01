@@ -16,59 +16,81 @@
 <PageTitle>User Debts</PageTitle>
 
 <div class="p-4">
-<h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
-
-<div class=" max-w-[1000px] flex flex-col gap-4">
-    <div>
-@if (debts != null && debts.Any())
-{
-    <UserDebts extraPayment="@extraPayment" user="@user?.Id"  ></UserDebts>
+    <div class="flex justify-between items-center">
+        <h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
+        <div class="flex lg:mt-0 lg:flex-shrink-0">
+            <div class="inline-flex rounded-md shadow">
+                <button class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-950 hover:bg-blue-700">
+                    Create Snowball
+                </button>
+            </div>
+            <div class="ml-3 inline-flex rounded-md shadow">
+                <button onclick="let a= document.getElementById('createDebt'); a.classList.remove('hidden'); a.classList.add('scale-y-0'); a.classList.remove('scale-y-0');" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-950 bg-white hover:bg-gray-50">
+                    Add Debt
+                </button>
+            </div>
+        </div>
+    </div>
+  
     
-}
-else
-{
-    <p>No debts found.</p>
-}
-</div>
 
 
+    <div class="max-w-[1000px] flex flex-col gap-4">
+        @if (addDebtContent != null)
+        {
+            @addDebtContent
+        }
 
-<!-- Debt Submission Form -->
-<EditForm Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="bg-blue-950 text-white p-4 flex flex-col gap-2 max-w-md items-center md:min-w-[500px]">
-    <DataAnnotationsValidator />
-        <h2 class="text-2xl font-extrabold tacking-tight">Add a debt</h2>
+        <EditForm id="createDebt" Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="hidden absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 bg-gray-600 text-white p-4 flex flex-col justify-center   mx-auto">
+            <DataAnnotationsValidator />
+            <div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center">
+            <h2 class="text-2xl font-extrabold tacking-tight">Add a debt</h2>
 
-    <div class="flex flex-col w-[100%]">
-        <label for="name">Debt Name:</label>
-            <InputText id="name" @bind-Value="Input.Name" class="p-1 text-blue-950"  />
-    </div>
-        <div class="flex flex-col w-[100%]">
-        <label for="rate">Interest Rate (%):</label>
-            <InputNumber id="rate" @bind-Value="Input.Rate" class="p-1 text-blue-950" />
-    </div>
-        <div class="flex flex-col w-[100%]">
-        <label for="balance">Balance:</label>
-            <InputNumber id="balance" @bind-Value="Input.Balance" class="p-1 text-blue-950" />
-    </div>
-        <div class="flex flex-col w-[100%]">
-        <label for="minPayment">Minimum Payment:</label>
-            <InputNumber id="minPayment" @bind-Value="Input.MinimumPayment" class="p-1 text-blue-950" />
-    </div>
-        <div class="flex flex-col w-[100%]">
-        <label for="dueDay">Due Day (Day of the Month):</label>
-            <InputNumber id="dueDay" @bind-Value="Input.DueDay" class="p-1 text-blue-950" />
-    </div>
+            <div class="flex flex-col w-[100%]">
+                <label for="name">Debt Name:</label>
+                <InputText id="name" @bind-Value="Input.Name" class="p-1 text-blue-950" />
+            </div>
+            <div class="flex flex-col w-[100%]">
+                <label for="rate">Interest Rate (%):</label>
+                <InputNumber id="rate" @bind-Value="Input.Rate" class="p-1 text-blue-950" />
+            </div>
+            <div class="flex flex-col w-[100%]">
+                <label for="balance">Balance:</label>
+                <InputNumber id="balance" @bind-Value="Input.Balance" class="p-1 text-blue-950" />
+            </div>
+            <div class="flex flex-col w-[100%]">
+                <label for="minPayment">Minimum Payment:</label>
+                <InputNumber id="minPayment" @bind-Value="Input.MinimumPayment" class="p-1 text-blue-950" />
+            </div>
+            <div class="flex flex-col w-[100%]">
+                <label for="dueDay">Due Day (Day of the Month):</label>
+                <InputNumber id="dueDay" @bind-Value="Input.DueDay" class="p-1 text-blue-950" />
+            </div>
 
-        <button class="inline-flex items-center rounded-md shadow pt-2" type="submit">
-           
-            <span  class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
-                Add Debt  <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
-            </span>  
-        </button>
-        
-            
-      
-</EditForm>
+            <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
+
+                <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                    Add Debt  <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+                </span>
+            </button>
+            <div aria-role="button" onclick="let a = document.getElementById('createDebt'); a.classList.add('hidden')" class="inline-flex items-center rounded-md shadow-md pt-2">
+                <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                        Cancel
+                </span>
+            </div>
+            </div>
+        </EditForm>
+        <div>
+            @if (debts != null && debts.Any())
+            {
+                <UserDebts extraPayment="@extraPayment" user="@user?.Id"  ></UserDebts>
+    
+            }
+            else
+            {
+                <p>No debts found.</p>
+            }
+        </div>
     </div>
 </div>
 
@@ -77,6 +99,8 @@ else
     private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;
+    private string formHidden = "hidden";
+    private RenderFragment addDebtContent;
 
     [Parameter]
     public int extraPayment { get; set; } = 0; 
@@ -119,6 +143,19 @@ else
     {
         extraPayment = Convert.ToInt32(extraPayment);
         Console.WriteLine(extraPayment);
+    }
+
+    private void AddDebt()
+    {
+        addDebtContent = builder =>
+        {
+            builder.OpenComponent(0, typeof(AddDebt));
+            // If you need to pass parameters to the AddDebt component, you can do it here using builder.AddAttribute
+            builder.CloseComponent();
+        };
+
+        // Trigger the UI update to render the new component
+        StateHasChanged();
     }
 
     async Task hello()

@@ -2,7 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 
 @using debt_snowball.Data
-@inject ApplicationDbContext DbContext
+@inject ApplicationDbContext DbContexty
 
 
 <div class="my-4" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -58,11 +58,13 @@ else
 
     public List<Debt> Debts { get; set; } = default!;
 
+  
+
     protected override async Task OnInitializedAsync()
     {
         if (user != null)
         {
-            Debts = DbContext.Debts.Where(d => d.User.Id == user).ToList();
+            Debts = DbContexty.Debts.Where(d => d.User.Id == user).ToList();
         }
 
     }
