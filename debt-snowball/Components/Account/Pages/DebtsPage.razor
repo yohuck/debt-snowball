@@ -15,12 +15,14 @@
 
 <PageTitle>User Debts</PageTitle>
 
+<Snowball />
+
 <div class="p-4 max-w-[1000px] mx-auto">
     <div class="flex justify-between items-center">
         <h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
         <div class="flex lg:mt-0 lg:flex-shrink-0">
             <div class="inline-flex rounded-md shadow">
-                <button class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-950 hover:bg-blue-700">
+                <button onclick="let a= document.getElementById('createSnowball'); a.classList.remove('translate-y-[-100vh]'); a.classList.add('translate-y-[0vh]');" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-950 hover:bg-blue-700">
                     Create Snowball
                 </button>
             </div>
@@ -35,13 +37,10 @@
     
 
 
-    <div class="max-w-[1000px] flex flex-col gap-4">
-        @if (addDebtContent != null)
-        {
-            @addDebtContent
-        }
+    <div class="max-w-[1000px] flex flex-col py-4 gap-4">
+       
 
-        <EditForm id="createDebt" Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 translate-y-[-100vh] bg-gray-800 text-white p-4 flex flex-col justify-center   mx-auto">
+        <EditForm  id="createDebt" Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 translate-y-[-100vh] bg-gray-800 text-white p-4 flex flex-col justify-center   mx-auto">
             <DataAnnotationsValidator />
             <div class="translate-y-[0]"></div>
             <div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center">
@@ -81,6 +80,40 @@
             </div>
             </div>
         </EditForm>
+        <EditForm id="createSnowball" Model="@SnowballInput" OnValidSubmit="@HandleSnowballSubmit" FormName="SnowballForm" class="absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 translate-y-[-100vh] bg-gray-800 text-white p-4 flex flex-col justify-center   mx-auto">
+            <DataAnnotationsValidator />
+            <div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center text-white">
+                <h2 class="text-2xl font-extrabold tacking-tight text-white">Create a Snowball</h2>
+
+               <div class="flex flex-col w-[100%]">
+                    <label for="name">Debt Name:</label>
+                    <InputText id="SnowballName" @bind-Value="SnowballInput.Name" class="p-1 text-blue-950" />
+                </div>
+                <div class="flex flex-col w-[100%]">
+                    <label for="SnowballExtraPayment">Extra Payment:</label>
+                    <InputNumber id="SnowballExtraPayment" @bind-Value="SnowballInput.ExtraPayment" class="p-1 text-blue-950" />
+                </div>
+
+                  <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
+                    <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                    Add Debt  
+                    <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+                    </span>
+                </button>
+                <div aria-role="button" onclick="let a = document.getElementById('createSnowball'); a.classList.add('translate-y-[-100vh]'); a.classList.remove('translate-y-[0vh]')" class="inline-flex items-center rounded-md shadow-md pt-2">
+                <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                        Cancel
+                </span>
+            </div>
+               
+           
+            </div>
+            </EditForm>
+
+    
+      
+
+       
         <div>
             @if (debts != null && debts.Any())
             {
@@ -98,19 +131,21 @@
 @code {
     private List<Debt> debts;
     private ApplicationUser user = default!;
-    private string? username;
-    private string? phoneNumber;
-    private string formHidden = "hidden";
-    private RenderFragment addDebtContent;
 
-    [Parameter]
+
+   
     public int extraPayment { get; set; } = 0; 
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
+    [SupplyParameterFromForm(FormName = "DebtForm")]
     private DebtInputModel Input { get; set; } = new DebtInputModel();
+
+    [SupplyParameterFromForm(FormName = "SnowballForm")]
+    private SnowballInputModel SnowballInput { get; set; } = new SnowballInputModel();
+
+  
 
     protected override async Task OnInitializedAsync()
     {
@@ -139,26 +174,14 @@
         debts = DbContext.Debts.Where(d => d.User == user).ToList();
     }
 
-    //update the label for the slider
-    private void updateSliderLabel()
+    private async Task HandleSnowballSubmit()
     {
-        extraPayment = Convert.ToInt32(extraPayment);
-        Console.WriteLine(extraPayment);
+   
+            Console.WriteLine(SnowballInput.Name);
+            Console.WriteLine(SnowballInput.ExtraPayment);
     }
 
- 
-
-    async Task hello()
-    {
-        if (extraPayment != default)
-        {
-            extraPayment = Convert.ToInt32(extraPayment);
-            Console.WriteLine(extraPayment);
-        }
-    }
-
-
-
+   
 
     private sealed class DebtInputModel
     {
@@ -181,4 +204,17 @@
         [Range(1, 31)]
         public int DueDay { get; set; } = 1;
     }
+
+    private sealed class SnowballInputModel
+    {
+        [Required]
+        public string Name { get; set; } = "Eric";
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double ExtraPayment { get; set; } = 350;
+
+    }
+
+  
 }

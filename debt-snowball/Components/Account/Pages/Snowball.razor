@@ -1,0 +1,19 @@
+﻿@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using debt_snowball.Data
+
+
+ 
+<div class="" style="display:flex;flex-direction:column;gap:0.5rem;">
+    <label for="extraPayment-slider" style="width:200px;display:flex;justify-content:space-between;">
+        Extra Payment<output for="extraPayment-slider">$ @extraPayment </output>
+    </label>
+    <input type="range" class="form-range" style="max-width:200px;" id="extraPayment-slider" min="0" max="1000" step="10" @bind="extraPayment" />
+</div>
+
+@code {
+
+    [Parameter]
+    public int extraPayment { get; set; } = 0;
+
+}
