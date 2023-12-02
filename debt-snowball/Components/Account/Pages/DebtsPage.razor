@@ -4,6 +4,9 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using debt_snowball.Data
+@using debt_snowball.Utilities
+
+
 
 
 
@@ -178,20 +181,7 @@
 
     private async Task HandleSnowballSubmit()
     {
-   
-   
-            Console.WriteLine(SnowballInput.ExtraPayment);
-            foreach (Debt debt in debts)
-            {
-                Console.WriteLine(debt.Name);
-                Console.WriteLine(debt.Balance);
-                Console.WriteLine(debt.MinimumPayment);
-                Console.WriteLine(debt.Rate);
-                Console.WriteLine(debt.DueDay);
-             
-            }
-            
-            
+            SnowballProcessor.ProcessSnowball(SnowballInput.ExtraPayment, debts);       
     }
 
    
