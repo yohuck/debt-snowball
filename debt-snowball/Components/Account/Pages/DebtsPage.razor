@@ -15,7 +15,7 @@
 
 <PageTitle>User Debts</PageTitle>
 
-<div class="p-4">
+<div class="p-4 max-w-[1000px] mx-auto">
     <div class="flex justify-between items-center">
         <h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
         <div class="flex lg:mt-0 lg:flex-shrink-0">
@@ -25,7 +25,7 @@
                 </button>
             </div>
             <div class="ml-3 inline-flex rounded-md shadow">
-                <button onclick="let a= document.getElementById('createDebt'); a.classList.remove('hidden'); a.classList.add('scale-y-0'); a.classList.remove('scale-y-0');" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-950 bg-white hover:bg-gray-50">
+                <button onclick="let a= document.getElementById('createDebt'); a.classList.remove('translate-y-[-100vh]'); a.classList.add('translate-y-[0vh]');" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-950 bg-white hover:bg-gray-50">
                     Add Debt
                 </button>
             </div>
@@ -41,8 +41,9 @@
             @addDebtContent
         }
 
-        <EditForm id="createDebt" Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="hidden absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 bg-gray-600 text-white p-4 flex flex-col justify-center   mx-auto">
+        <EditForm id="createDebt" Model="@Input" OnValidSubmit="@HandleSubmit" FormName="DebtForm" class="absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 translate-y-[-100vh] bg-gray-800 text-white p-4 flex flex-col justify-center   mx-auto">
             <DataAnnotationsValidator />
+            <div class="translate-y-[0]"></div>
             <div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center">
             <h2 class="text-2xl font-extrabold tacking-tight">Add a debt</h2>
 
@@ -73,7 +74,7 @@
                     Add Debt  <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
                 </span>
             </button>
-            <div aria-role="button" onclick="let a = document.getElementById('createDebt'); a.classList.add('hidden')" class="inline-flex items-center rounded-md shadow-md pt-2">
+            <div aria-role="button" onclick="let a = document.getElementById('createDebt'); a.classList.add('translate-y-[-100vh]'); a.classList.remove('translate-y-[0vh]')" class="inline-flex items-center rounded-md shadow-md pt-2">
                 <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
                         Cancel
                 </span>
@@ -145,18 +146,7 @@
         Console.WriteLine(extraPayment);
     }
 
-    private void AddDebt()
-    {
-        addDebtContent = builder =>
-        {
-            builder.OpenComponent(0, typeof(AddDebt));
-            // If you need to pass parameters to the AddDebt component, you can do it here using builder.AddAttribute
-            builder.CloseComponent();
-        };
-
-        // Trigger the UI update to render the new component
-        StateHasChanged();
-    }
+ 
 
     async Task hello()
     {
