@@ -15,8 +15,6 @@
 
 <PageTitle>User Debts</PageTitle>
 
-<Snowball />
-
 <div class="p-4 max-w-[1000px] mx-auto">
     <div class="flex justify-between items-center">
         <h1 class="text-4xl font-extrabold tacking-tight">Your Debts</h1>
@@ -82,21 +80,25 @@
         </EditForm>
         <EditForm id="createSnowball" Model="@SnowballInput" OnValidSubmit="@HandleSnowballSubmit" FormName="SnowballForm" class="absolute left-0 right-0 top-0 bottom-0 m-auto transition-all bg-opacity-80 translate-y-[-100vh] bg-gray-800 text-white p-4 flex flex-col justify-center   mx-auto">
             <DataAnnotationsValidator />
-            <div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center text-white">
+            <div class="max-w-[450px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center text-white">
                 <h2 class="text-2xl font-extrabold tacking-tight text-white">Create a Snowball</h2>
-
-               <div class="flex flex-col w-[100%]">
-                    <label for="name">Debt Name:</label>
-                    <InputText id="SnowballName" @bind-Value="SnowballInput.Name" class="p-1 text-blue-950" />
+                <div class="mt-2">
+                <p class="font-bold">Let's do this! </p>
+                <p class="font-thin mt-2">
+                    First, we'll calculate how long it will take to pay off your debts just by making the minimum payments each month. </p>
+                    <p class="font-thin mt-2">
+                        Then, we'll show you how much faster you can pay off your debts by adding an extra payment to your smallest debt.</p> 
                 </div>
+
+      
                 <div class="flex flex-col w-[100%]">
-                    <label for="SnowballExtraPayment">Extra Payment:</label>
+                    <label for="SnowballExtraPayment">Extra Payment ($):</label>
                     <InputNumber id="SnowballExtraPayment" @bind-Value="SnowballInput.ExtraPayment" class="p-1 text-blue-950" />
                 </div>
 
                   <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
                     <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
-                    Add Debt  
+                    Let it roll! 
                     <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
                     </span>
                 </button>
@@ -177,8 +179,19 @@
     private async Task HandleSnowballSubmit()
     {
    
-            Console.WriteLine(SnowballInput.Name);
+   
             Console.WriteLine(SnowballInput.ExtraPayment);
+            foreach (Debt debt in debts)
+            {
+                Console.WriteLine(debt.Name);
+                Console.WriteLine(debt.Balance);
+                Console.WriteLine(debt.MinimumPayment);
+                Console.WriteLine(debt.Rate);
+                Console.WriteLine(debt.DueDay);
+             
+            }
+            
+            
     }
 
    
@@ -207,8 +220,7 @@
 
     private sealed class SnowballInputModel
     {
-        [Required]
-        public string Name { get; set; } = "Eric";
+       
 
         [Required]
         [Range(0, double.MaxValue)]

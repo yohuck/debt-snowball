@@ -14,26 +14,33 @@
 <h3>Profile</h3>
 <StatusMessage />
 
-<div class="row">
+<div class="max-w-[400px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col  rounded-md shadow-lg items-center">
     <div class="col-md-6">
         <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+            <div class="flex flex-col w-[100%]">
+                <input type="text" value="@username" class="p-1 text-blue-950" placeholder="Please choose your username." disabled />
                 <label for="username" class="form-label">Username</label>
             </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+            <div class="flex flex-col w-[100%]">
+                <InputText @bind-Value="Input.PhoneNumber" class="p-1 text-blue-950" placeholder="Please enter your phone number." />
                 <label for="phone-number" class="form-label">Phone number</label>
                 <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
-                <InputDate @bind-Value="Input.DateOfBirth" class="form-control" />
+            <div class="flex flex-col w-[100%]">
+                <InputDate @bind-Value="Input.DateOfBirth" class="p-1 text-blue-950" />
                 <label for="date-of-birth" class="form-label">DateOfBirth</label>
                 <ValidationMessage For="() => Input.DateOfBirth" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+       
+
+             <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
+
+                <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                    Save  <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+                </span>
+            </button>
         </EditForm>
     </div>
 </div>
