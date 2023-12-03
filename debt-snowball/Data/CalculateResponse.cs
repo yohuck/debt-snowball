@@ -37,9 +37,32 @@
         public double TotalOfPayments { get; set; }
     }
 
+    public class AmortizationLineItem
+    {
+        public string AmortizationLineType { get; set; }
+        public AmortizationData Data { get; set; }
+        public DateTime Date { get; set; }
+        public int EventId { get; set; }
+        public int Line { get; set; }
+        public int Sequence { get; set; }
+
+        public class AmortizationData
+        {
+            public double Balance { get; set; }
+            public double InterestAccrued { get; set; }
+            public double InterestPaid { get; set; }
+            public double LoanAmount { get; set; }
+            public List<double> Loans { get; set; }
+            public double PaymentAmount { get; set; }
+            public List<double> Payments { get; set; }
+            public double PrincipalPaid { get; set; }
+            public double UnpaidInterestBalance { get; set; }
+        }
+    }
+
     public class Amortization
     {
-        public List<object> AmortizationTable { get; set; } // Use object or a specific class if the structure is known
+        public List<AmortizationLineItem> AmortizationTable { get; set; } // Use object or a specific class if the structure is known
         public APR APR { get; set; }
         public double Rounding { get; set; }
         public Unknowns Unknowns { get; set; }

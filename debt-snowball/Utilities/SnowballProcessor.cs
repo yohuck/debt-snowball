@@ -5,6 +5,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using debt_snowball.Data;
+using System.Collections.Specialized;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace debt_snowball.Utilities
 {
@@ -14,108 +16,116 @@ namespace debt_snowball.Utilities
 
         public async static void ProcessSnowball(double extraPayment, List<Debt> debts)
         {
-            double totalPayment = extraPayment;
+            double totalPayment = 0;
             double totalDebt = 0;
-            double totalInterest = 13.23;
+            double totalInterestPaid = 0;
+            double totalPaymentsMade = 0;
+            double totalMonths = 0;
+
+            List<CalculateResponse> responses = new List<CalculateResponse>();
 
             foreach (Debt debt in debts)
             {
-                Console.WriteLine(debt.Name);
-                Console.WriteLine(debt.Balance);
-                Console.WriteLine(debt.MinimumPayment);
-                Console.WriteLine(debt.Rate);
-                Console.WriteLine(debt.DueDay);
-
+          
                 totalPayment += debt.MinimumPayment;
                 totalDebt += debt.Balance;
 
+                CalculateResponse debtCalc = await CallCalculate(debt.Balance * 100, debt.MinimumPayment * 100, debt.DueDay, debt.Rate / 100);
+
+                responses.Add(debtCalc);
+
+            }
+
+            foreach (CalculateResponse response in responses)
+            {
+                totalInterestPaid += response.Amortization.APR.FinanceCharge;
+                totalPaymentsMade += response.Amortization.APR.TotalOfPayments;
+
+                int paymentCount = response.Amortization.AmortizationTable.Count(item => item.AmortizationLineType == "Payment");
+
+                totalMonths = Math.Max(totalMonths, paymentCount);
             }
 
             Console.WriteLine(totalPayment);
             Console.WriteLine(totalDebt);
-            CalculateResponse debtPayments = await CallCalculate(totalDebt, totalPayment, 12, 0.1456);
-
-            Console.WriteLine("Here");
         }
 
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
-            var CustomerId = "YOUR_API_KEY";
+            var CustomerId = "YOUR_API_STRING";
             string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            // TODO: correct date
-            string Document = "{\"CFM\" : [{\"Amount\" : " + balance + ",\"Event\" : \"Loan\",\"Number\" : 1,\"StartDate\" : \"" + today + "\"},{\"Amount\" : " + payment + ",\"Event\" : \"Payment\",\"Number\" : \"Unknown\",\"Period\" : \"Monthly\",\"StartDate\" : \"2023-12-" + day + "\"}],\"Label\" : \"\",\"Period\" : \"Monthly\",\"Rate\" : " + rate + ",\"Schema\" : 6,\"YearLength\" : 365}";
+            int dayOfMonth = DateTime.Now.Day;
+            int month = DateTime.Now.Month;
+            int year = DateTime.Now.Year;
 
+            if (dayOfMonth > day)
+            {
+                if(month == 12)
+                {
+                    month = 1;
+                    year++;
+                }
+                else
+                {
+                    month++;
+                }
+
+            }
+
+            string Document = "{\"CFM\" : [{\"Amount\" : " + balance + ",\"Event\" : \"Loan\",\"Number\" : 1,\"StartDate\" : \"" + today + "\"},{\"Amount\" : " + payment + ",\"Event\" : \"Payment\",\"Number\" : \"Unknown\",\"Period\" : \"Monthly\",\"StartDate\" : \"" + year + "-" + month + "-" + day + "\"}],\"Label\" : \"\",\"Period\" : \"ExactDays\",\"Rate\" : " + rate + ",\"Schema\" : 6,\"YearLength\" : 365}";
 
             var data = new
             {
-                CustomerId = CustomerId,
+                CustomerId, // Ensure this variable is defined and set before using
                 CreateAmSchedule = true,
                 RoundingType = "Balloon",
                 SpecificLine = 2,
                 LineAdjust = "AllAmounts",
-                Document = Document
+                Document // Ensure this variable is defined and set before using
             };
 
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            double unknownValue;
-            string responseContent = "";
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                HttpResponseMessage response;
-                using (response = await client.PostAsync("https://tv6wsstaging.com/webapi/calculate", content))
+                using (HttpClient client = new HttpClient())
                 {
-                    responseContent = await response.Content.ReadAsStringAsync();
+                    using (HttpResponseMessage response = await client.PostAsync("https://tv6wsstaging.com/webapi/calculate", content))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseContent = await response.Content.ReadAsStringAsync();
+                            return JsonSerializer.Deserialize<CalculateResponse>(responseContent);
+                        }
+                        else
+                        {
+                            // Log error message or handle it as per your application's error handling policy
+                            throw new HttpRequestException($"Request failed with status code: {response.StatusCode} and message: {response.ReasonPhrase}");
+                        }
+                    }
                 }
             }
-
-            CalculateResponse calculateResponse = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
-            
-          
-
-            return calculateResponse;
-
-
-
-
-
-
-        }
-
-        public class RootObject
-        {
-            public CFM CFM { get; set; }
-        }
-
-        public class CFM
-        {
-            public Unknowns Unknowns { get; set; }
-        }
-
-        public class Unknowns
-        {
-            public string Value { get; set; }
-        }
-
-        public class CashFlowItem
-        {
-            public double Amount { get; set; }
-            public string Event { get; set; }
-            public int Number { get; set; }
-            public string? Period { get; set; } // Explicitly marked as nullable
-            public DateTime StartDate { get; set; }
-        }
-
-        public class CashFlowDeserializer
-        {
-            public static List<CashFlowItem> DeserializeCashFlowItems(string json)
+            catch (HttpRequestException ex)
             {
-                return JsonSerializer.Deserialize<List<CashFlowItem>>(json);
+                // Handle HTTP request related errors here
+                Console.WriteLine($"An error occurred while sending the request: {ex.Message}");
+                throw;
             }
+            catch (JsonException ex)
+            {
+                // Handle JSON deserialization errors here
+                Console.WriteLine($"An error occurred while deserializing the response: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Handle other unforeseen errors
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                throw;
+            }
+
         }
-
-
     }
 }
