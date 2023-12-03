@@ -4,6 +4,7 @@ using System.Text;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using debt_snowball.Data;
 
 namespace debt_snowball.Utilities
 {
@@ -32,24 +33,25 @@ namespace debt_snowball.Utilities
 
             Console.WriteLine(totalPayment);
             Console.WriteLine(totalDebt);
-            double unknownAmount = await MakeRequestAsync(totalDebt, totalPayment, 12, totalInterest);
-          
+            CalculateResponse debtPayments = await CallCalculate(totalDebt, totalPayment, 12, 0.1456);
+
             Console.WriteLine("Here");
         }
 
-        private static async Task<double> MakeRequestAsync(double balance, double payment, int day, double rate)
+        private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
-            var CustomerId = "YOUR_CODE";
+            var CustomerId = "YOUR_API_KEY";
+            string today = DateTime.Now.ToString("yyyy-MM-dd");
 
             // TODO: correct date
-            string Document = "{\"CFM\" : [{\"Amount\" : " + "400000" + ",\"Event\" : \"Loan\",\"Number\" : 1,\"StartDate\" : \"2021-01-01\"},{\"Amount\" : " + "25000" + ",\"Event\" : \"Payment\",\"Number\" : \"Unknown\",\"Period\" : \"Monthly\",\"StartDate\" : \"2023-11-01\"}],\"Label\" : \"\",\"Period\" : \"Monthly\",\"Rate\" : " + "0.023" + ",\"Schema\" : 6,\"YearLength\" : 365}";
+            string Document = "{\"CFM\" : [{\"Amount\" : " + balance + ",\"Event\" : \"Loan\",\"Number\" : 1,\"StartDate\" : \"" + today + "\"},{\"Amount\" : " + payment + ",\"Event\" : \"Payment\",\"Number\" : \"Unknown\",\"Period\" : \"Monthly\",\"StartDate\" : \"2023-12-" + day + "\"}],\"Label\" : \"\",\"Period\" : \"Monthly\",\"Rate\" : " + rate + ",\"Schema\" : 6,\"YearLength\" : 365}";
 
 
             var data = new
             {
                 CustomerId = CustomerId,
-                CreateAmSchedule = false,
-                RoundingType = "Ignore",
+                CreateAmSchedule = true,
+                RoundingType = "Balloon",
                 SpecificLine = 2,
                 LineAdjust = "AllAmounts",
                 Document = Document
@@ -69,16 +71,11 @@ namespace debt_snowball.Utilities
                 }
             }
 
-            using JsonDocument doc = JsonDocument.Parse(responseContent);
+            CalculateResponse calculateResponse = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
+            
+          
 
-            JsonElement cfmElement = doc.RootElement.GetProperty("CFM");
-            JsonElement unknownsElement = cfmElement.GetProperty("Unknowns");
-            unknownValue = unknownsElement.GetProperty("Value").GetDouble();
-
-            Console.WriteLine(unknownValue);
-            Console.WriteLine("Here");
-
-            return unknownValue;
+            return calculateResponse;
 
 
 
@@ -101,6 +98,24 @@ namespace debt_snowball.Utilities
         {
             public string Value { get; set; }
         }
+
+        public class CashFlowItem
+        {
+            public double Amount { get; set; }
+            public string Event { get; set; }
+            public int Number { get; set; }
+            public string? Period { get; set; } // Explicitly marked as nullable
+            public DateTime StartDate { get; set; }
+        }
+
+        public class CashFlowDeserializer
+        {
+            public static List<CashFlowItem> DeserializeCashFlowItems(string json)
+            {
+                return JsonSerializer.Deserialize<List<CashFlowItem>>(json);
+            }
+        }
+
 
     }
 }
