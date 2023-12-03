@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using debt_snowball.Data;
 
@@ -11,9 +12,11 @@ using debt_snowball.Data;
 namespace debtsnowball.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231203222409_AddSnowball")]
+    partial class AddSnowball
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace debtsnowball.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("float");
 
-                    b.Property<int?>("SnowballaSnowballId")
+                    b.Property<int?>("SnowballId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -55,7 +58,7 @@ namespace debtsnowball.Migrations
 
                     b.HasKey("DebtId");
 
-                    b.HasIndex("SnowballaSnowballId");
+                    b.HasIndex("SnowballId");
 
                     b.HasIndex("UserId");
 
@@ -222,7 +225,7 @@ namespace debtsnowball.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("Snowballa", b =>
+            modelBuilder.Entity("Snowball", b =>
                 {
                     b.Property<int>("SnowballId")
                         .ValueGeneratedOnAdd()
@@ -314,9 +317,9 @@ namespace debtsnowball.Migrations
 
             modelBuilder.Entity("Debt", b =>
                 {
-                    b.HasOne("Snowballa", null)
+                    b.HasOne("Snowball", null)
                         .WithMany("Debts")
-                        .HasForeignKey("SnowballaSnowballId");
+                        .HasForeignKey("SnowballId");
 
                     b.HasOne("debt_snowball.Data.ApplicationUser", "User")
                         .WithMany("Debts")
@@ -385,7 +388,7 @@ namespace debtsnowball.Migrations
                         .HasForeignKey("DebtId");
                 });
 
-            modelBuilder.Entity("Snowballa", b =>
+            modelBuilder.Entity("Snowball", b =>
                 {
                     b.HasOne("debt_snowball.Data.ApplicationUser", "User")
                         .WithMany("Snowballs")
@@ -401,7 +404,7 @@ namespace debtsnowball.Migrations
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("Snowballa", b =>
+            modelBuilder.Entity("Snowball", b =>
                 {
                     b.Navigation("Debts");
                 });

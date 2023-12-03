@@ -18,6 +18,14 @@ public class Debt
 
 }
 
+public class Snowballa
+{
+    public int SnowballId { get; set; }
+    public double ExtraPayment { get; set; }
+    public ApplicationUser User { get; set; }
+    public ICollection<Debt> Debts { get; set; }
+}
+
 public class Payment
 {
     public int PaymentId { get; set; }

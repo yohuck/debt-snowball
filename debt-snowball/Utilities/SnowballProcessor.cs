@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using debt_snowball.Data;
 using System.Collections.Specialized;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Identity.Client;
 
 namespace debt_snowball.Utilities
 {
@@ -14,13 +15,15 @@ namespace debt_snowball.Utilities
     {
 
 
-        public async static void ProcessSnowball(double extraPayment, List<Debt> debts)
+        public async static Task<BaseSnowballNumbers> ProcessSnowball(double extraPayment, List<Debt> debts)
         {
             double totalPayment = 0;
             double totalDebt = 0;
             double totalInterestPaid = 0;
             double totalPaymentsMade = 0;
             double totalMonths = 0;
+
+  
 
             List<CalculateResponse> responses = new List<CalculateResponse>();
 
@@ -48,11 +51,20 @@ namespace debt_snowball.Utilities
 
             Console.WriteLine(totalPayment);
             Console.WriteLine(totalDebt);
+
+            return new BaseSnowballNumbers
+            {
+                TotalPayment = totalPayment,
+                TotalDebt = totalDebt,
+                TotalInterestPaid = totalInterestPaid,
+                TotalPaymentsMade = totalPaymentsMade,
+                TotalMonths = totalMonths
+            };
         }
 
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
-            var CustomerId = "YOUR_API_STRING";
+            var CustomerId = "YOUR_API_KEY";
             string today = DateTime.Now.ToString("yyyy-MM-dd");
 
             int dayOfMonth = DateTime.Now.Day;

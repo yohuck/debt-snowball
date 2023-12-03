@@ -20,6 +20,7 @@ namespace debt_snowball.Data
         public DbSet<Payment> Payments { get; set; }
 
         public DbSet<Debt> Debts { get; set; }
+        public DbSet<Snowballa> Snowballs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,6 +30,14 @@ namespace debt_snowball.Data
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany<Debt>(a => a.Debts)
                 .WithOne(d => d.User)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Snowballa>()
+                .HasKey(s => s.SnowballId);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Snowballa>(a => a.Snowballs)
+                .WithOne(s => s.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
         }

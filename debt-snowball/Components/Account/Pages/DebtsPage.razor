@@ -130,16 +130,28 @@
                 <p>No debts found.</p>
             }
         </div>
+        <div>
+            @if (snowballs != null && snowballs.Any())
+            {
+               <p>We have a snowball!</p>
+
+            }
+            else
+            {
+                <p>No Snowballs.</p>
+            }
+        </div>
     </div>
 </div>
 
 @code {
     private List<Debt> debts;
+    private List<Snowballa> snowballs;
     private ApplicationUser user = default!;
-    
 
 
-   
+
+
     public int extraPayment { get; set; } = 0; 
 
     [CascadingParameter]
@@ -151,7 +163,7 @@
     [SupplyParameterFromForm(FormName = "SnowballForm")]
     private SnowballInputModel SnowballInput { get; set; } = new SnowballInputModel();
 
-  
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -159,6 +171,7 @@
         if(user != null)
         {
             debts = DbContext.Debts.Where(d => d.User == user).ToList();
+            snowballs = DbContext.Snowballs.Where(d => d.User == user).ToList();
         }
 
     }
@@ -182,7 +195,22 @@
 
     private async Task HandleSnowballSubmit()
     {
-            SnowballProcessor.ProcessSnowball(SnowballInput.ExtraPayment, debts);       
+        BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(SnowballInput.ExtraPayment, debts);
+
+        Console.WriteLine("Success");
+
+        var newSnowball = new Snowballa
+        {
+            User = user,
+            ExtraPayment = SnowballInput.ExtraPayment,
+            Debts = debts
+        };
+
+DbContext.Snowballs.Add(newSnowball);
+        await DbContext.SaveChangesAsync();
+        snowballs = DbContext.Snowballs.Where(d => d.User == user).ToList();
+
+    
     }
 
    
