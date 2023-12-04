@@ -13,9 +13,76 @@
     {
         public double Amount { get; set; }
         public string Event { get; set; }
-        public int Number { get; set; }
-        public DateTime StartDate { get; set; }
+        public double Number { get; set; }
+        public string StartDate { get; set; }
+        public string? Period { get; set; }
     }
+
+   
+
+    public struct AmountOrUnknown
+    {
+        private double? _amount;
+        private string _unknown;
+
+        public AmountOrUnknown(double amount)
+        {
+            if(amount == 0)
+            {
+                _unknown = "Unknown";
+                _amount = null;
+            }
+            else
+            {
+                _amount = amount;
+                _unknown = null;
+            }
+            
+        }
+
+        public AmountOrUnknown(string unknown)
+        {
+            _amount = null;
+            _unknown = unknown;
+        }
+
+        public bool IsUnknown => _unknown != null;
+
+        public double? Amount => _amount;
+
+        public override string ToString()
+        {
+            return IsUnknown ? _unknown : _amount?.ToString() ?? "null";
+        }
+    }
+
+    public struct NumberOrUnknown
+    {
+        private double? _number;
+        private string _unknown;
+
+        public NumberOrUnknown(double number)
+        {
+            _number = number;
+            _unknown = null;
+        }
+
+        public NumberOrUnknown(string unknown)
+        {
+            _number = null;
+            _unknown = unknown;
+        }
+
+        public bool IsUnknown => _unknown != null;
+
+        public double? Number => _number;
+
+        public override string ToString()
+        {
+            return IsUnknown ? _unknown : _number?.ToString() ?? "null";
+        }
+    }
+
 
     public class CashFlowMatrix
     {

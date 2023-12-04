@@ -23,13 +23,13 @@ namespace debt_snowball.Utilities
             double totalPaymentsMade = 0;
             double totalMonths = 0;
 
-  
+
 
             List<CalculateResponse> responses = new List<CalculateResponse>();
 
             foreach (Debt debt in debts)
             {
-          
+
                 totalPayment += debt.MinimumPayment;
                 totalDebt += debt.Balance;
 
@@ -62,6 +62,148 @@ namespace debt_snowball.Utilities
             };
         }
 
+        public async static Task<string> CalculateSnowball(double extraPayment, List<Debt> debts)
+        {
+            double leftOver;
+            List<int> paymentCount = new List<int>();
+            double currentExtraPayment = extraPayment;
+
+            foreach (Debt debt in debts)
+            {
+                double paymentAmount = debt.MinimumPayment + currentExtraPayment;
+                List<int> clonePaymentCount = paymentCount.ToList();
+                List<CashFlowLineItemUnknown> paymentList = new List<CashFlowLineItemUnknown>();
+                int day = debt.DueDay;
+
+                CashFlowLineItemUnknown loan = new CashFlowLineItemUnknown
+                {
+                    Amount = debt.Balance.ToString(),
+                    Event = "Loan",
+                    Number = "1",
+                    StartDate = DateTime.Now.ToString("yyyy-MM-dd")
+                };
+
+                paymentList.Add(loan);
+
+                do
+                {
+                    double countOrUnknown = clonePaymentCount.FirstOrDefault();
+
+
+
+                    string today = DateTime.Now.ToString("yyyy-MM-dd");
+                    int dayOfMonth = DateTime.Now.Day;
+                    int month = DateTime.Now.Month;
+                    int year = DateTime.Now.Year;
+
+                    if (dayOfMonth > day)
+                    {
+                        if (month == 12)
+                        {
+                            month = 1;
+                            year++;
+                        }
+                        else
+                        {
+                            month++;
+                        }
+
+                    }
+
+                    string dayOfMonthString = day.ToString("00");
+                    string monthString = month.ToString("00");
+                    string countOrUnknownString = countOrUnknown == 0 ? "Unknown" : countOrUnknown.ToString();
+
+                    CashFlowLineItemUnknown payment = new CashFlowLineItemUnknown
+                    {
+                        Amount = paymentAmount.ToString(),
+                        Event = "Payment",
+                        Number = countOrUnknownString,
+                        Period = "Monthly",
+                        StartDate = $"{year}-{monthString}-{dayOfMonthString}"
+                    };
+
+                    paymentList.Add(payment);
+
+                    
+                } while (clonePaymentCount.FirstOrDefault() > 0);
+
+                CalculateDocument document = new CalculateDocument
+                {
+                    CFM = paymentList,
+                    Label = "",
+                    Period = "ExactDays",
+                    Rate = debt.Rate / 100,
+                    Schema = 6,
+                    YearLength = 365
+                };
+
+                CalculateRequest request = new CalculateRequest
+                {
+                    CustomerId = "YOUR_API_KEY",
+                    CreateAmSchedule = false,
+                    RoundingType = "Balloon",
+                    SpecificLine = "2",
+                    LineAdjustment = "AllAmounts",
+                    Document = document
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        using (HttpResponseMessage response = await client.PostAsync("https://tvaluerestws.com/webapi/calculate", content))
+                        {
+                            if (response.IsSuccessStatusCode)
+                            {
+                                string responseContent = await response.Content.ReadAsStringAsync();
+                                Console.WriteLine(responseContent);
+                                CalculateResponse aaa = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
+
+                  
+                               
+
+                                Console.WriteLine("wowwowowow");
+                            }
+                            else
+                            {
+                                // Log error message or handle it as per your application's error handling policy
+                                throw new HttpRequestException($"Request failed with status code: {response.StatusCode} and message: {response.ReasonPhrase}");
+                            }
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Handle HTTP request related errors here
+                    Console.WriteLine($"An error occurred while sending the request: {ex.Message}");
+                    throw;
+                }
+                catch (JsonException ex)
+                {
+                    // Handle JSON deserialization errors here
+                    Console.WriteLine($"An error occurred while deserializing the response: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    // Handle other unforeseen errors
+                    Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                    throw;
+                }
+
+                Console.WriteLine("Wow");
+
+
+            }
+
+
+            return "Wow";
+        }
+
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
             var CustomerId = "YOUR_API_KEY";
@@ -73,7 +215,7 @@ namespace debt_snowball.Utilities
 
             if (dayOfMonth > day)
             {
-                if(month == 12)
+                if (month == 12)
                 {
                     month = 1;
                     year++;
@@ -139,5 +281,7 @@ namespace debt_snowball.Utilities
             }
 
         }
+
+       
     }
 }

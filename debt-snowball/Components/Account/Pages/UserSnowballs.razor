@@ -2,6 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 @using debt_snowball.Utilities
 
+
 @using debt_snowball.Data
 @inject ApplicationDbContext DbContexty
 
@@ -24,34 +25,32 @@
         <tbody class="[&>*:nth-child(even)]:bg-gray-100">
             @if (!isLoading)
             {
-                @foreach (var snowballa in Snowballas)
-                {
+               
                     <tr>
-                        <td class="p-2 max-w-[120px] overflow-auto">@snowballa.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@lastSnowball.ExtraPayment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            @((snowballa.Debts?.Count() ?? 0).ToString())
+                            @((lastSnowball.Debts?.Count() ?? 0).ToString())
                         </td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalDebt</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalPayment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaid</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
                     </tr>
-                }
+                
             }
             else
-            { @foreach (var snowballa in Snowballas)
-                {
+            { 
                     <tr>
-                        <td class="p-2 max-w-[120px] overflow-auto">@snowballa.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@lastSnowball.ExtraPayment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            @((snowballa.Debts?.Count() ?? 0).ToString())
+                            @((lastSnowball.Debts?.Count() ?? 0).ToString())
                         </td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
                     </tr>
-                }
+                
             }
     
         </tbody>
@@ -75,6 +74,7 @@ else
     double totalMonths;
 
     private bool isLoading = false;
+    Snowballa lastSnowball;
 
 
 
@@ -92,11 +92,11 @@ else
             Snowballas = DbContexty.Snowballas.Where(d => d.User.Id == user).ToList<Snowballa>();
         }
 
-        Snowballa latest = Snowballas.Last();
+        lastSnowball = Snowballas.Last();
 
-        List<Debt> debts = latest.Debts.ToList();
+        List<Debt> debts = lastSnowball.Debts.ToList();
 
-        BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(latest.ExtraPayment, debts);
+        BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(lastSnowball.ExtraPayment, debts);
 
         totalDebt = startingData.TotalDebt;
         totalPayment = startingData.TotalPayment;
@@ -109,6 +109,10 @@ else
 
 
         Console.WriteLine("wow");
+
+        string test = await SnowballProcessor.CalculateSnowball(lastSnowball.ExtraPayment, debts);
+
+        Console.WriteLine("really wow!");
 
     }
 }
