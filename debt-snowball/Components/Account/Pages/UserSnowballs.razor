@@ -27,18 +27,18 @@
                     <tr>
                         <td class="p-2 max-w-[120px] overflow-auto">Minimum Payment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            @(totalInterestPaid + totalDebt)
+                            $@(totalInterestPaid + totalDebt)
                         </td>
-                    <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaid</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">$@totalInterestPaid</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
            
                     </tr>
                     <tr>
                         <td class="p-2 max-w-[120px] overflow-auto">$@lastSnowball.ExtraPayment more /Month</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            @(Math.Round(totalPaymentsFromSnowball,2))
+                           $@(Math.Round(totalPaymentsFromSnowball,2))
                         </td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaidFromSnowball</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">$@totalInterestPaidFromSnowball</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalMonthsFromSnowball</td>
                     </tr>
                 
@@ -69,23 +69,29 @@
         </tbody>
     </table>
     if (isLoading)
-    {   <div class="flex">
-        <div class="mx-auto flex max-w-[600px] justify-between items-center h-[300px]">
-            <p class="text-2xl text-blue-950 font-extrabold">I'm crunching the numbers for you!</p>
-            <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square transform -scale-x-100" />
-            
+    {
+        <div class="flex flex-col md:flex-row mt-4">
+            <div class="hidden md:block">
+                <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square" />
+            </div>
+            <p class="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg">
+                I'm calculating your savings. Just give me one second. You see, I'm a Yeti and it takes me a little longer to do things. I sure do hate debt though. YARRRRGHHHH.
+            </p>
         </div>
-        </div>
+
+      
     }
     else
     {
-        <div class="flex">
-            <div class="mx-auto flex max-w-[600px] justify-between items-center h-[300px]">
-                <p class="text-2xl text-blue-950 font-extrabold">Wow! You will save $@(Math.Round(totalSaved, 2)) over the course of @monthsSaved months!</p>
-                <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square transform -scale-x-100" />
-
+        <div class="flex flex-col md:flex-row mt-4">
+            <div class="hidden md:block">
+                <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square" />
             </div>
+            <p class="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg">
+               @messageFromYeti
+            </p>
         </div>
+
       
        
     }
@@ -113,6 +119,8 @@ else
 
     double totalSaved;
     double monthsSaved;
+
+    string messageFromYeti;
 
     private bool isLoading = false;
     Snowballa lastSnowball;
@@ -145,7 +153,7 @@ else
         totalPaymentsMade = startingData.TotalPaymentsMade / 100;
         totalMonths = startingData.TotalMonths;
 
-       
+
 
         isLoading = false;
 
@@ -164,6 +172,11 @@ else
 
         totalSaved = totalInterestPaid - totalInterestPaidFromSnowball;
         monthsSaved = totalMonths - totalMonthsFromSnowball;
+        TalkToYeti talkToYeti = new TalkToYeti();
+
+        string yetiMessage = await talkToYeti.CallYeti(Math.Round(totalSaved,2), monthsSaved);
+
+        messageFromYeti = yetiMessage;
 
     }
 }

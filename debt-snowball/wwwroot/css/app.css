@@ -522,12 +522,20 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .static {
   position: static;
 }
 
 .absolute {
   position: absolute;
+}
+
+.relative {
+  position: relative;
 }
 
 .bottom-0 {
@@ -544,6 +552,10 @@ video {
 
 .top-0 {
   top: 0px;
+}
+
+.-top-10 {
+  top: -2.5rem;
 }
 
 .m-auto {
@@ -573,6 +585,22 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mt-\[200px\] {
+  margin-top: 200px;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.mt-\[50px\] {
+  margin-top: 50px;
+}
+
+.mt-4 {
+  margin-top: 1rem;
 }
 
 .block {
@@ -633,6 +661,10 @@ video {
 
 .w-\[95\%\] {
   width: 95%;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .max-w-\[1000px\] {
@@ -743,12 +775,34 @@ video {
   border-radius: 0.375rem;
 }
 
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
 .border {
   border-width: 1px;
 }
 
+.border-2 {
+  border-width: 2px;
+}
+
+.border-solid {
+  border-style: solid;
+}
+
 .border-transparent {
   border-color: transparent;
+}
+
+.border-red-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(252 165 165 / var(--tw-border-opacity));
+}
+
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
 .bg-blue-100 {
@@ -849,12 +903,30 @@ video {
   padding-bottom: 1rem;
 }
 
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .pt-2 {
   padding-top: 0.5rem;
 }
 
 .pt-5 {
   padding-top: 1.25rem;
+}
+
+.pt-\[200px\] {
+  padding-top: 200px;
+}
+
+.pt-\[100px\] {
+  padding-top: 100px;
 }
 
 .text-left {
@@ -884,6 +956,11 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .font-bold {
@@ -1002,6 +1079,14 @@ video {
 }
 
 @media (min-width: 768px) {
+  .md\:visible {
+    visibility: visible;
+  }
+
+  .md\:block {
+    display: block;
+  }
+
   .md\:flex {
     display: flex;
   }
@@ -1030,6 +1115,11 @@ video {
   .md\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .md\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
   }
 }
 
