@@ -104,7 +104,7 @@ namespace debt_snowball.Utilities
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    using (HttpResponseMessage response = await client.PostAsync("https://tv6wsstaging.com/webapi/calculate", content))
+                    using (HttpResponseMessage response = await client.PostAsync("https://tvaluerestws.com/webapi/calculate", content))
                     {
                         if (response.IsSuccessStatusCode)
                         {

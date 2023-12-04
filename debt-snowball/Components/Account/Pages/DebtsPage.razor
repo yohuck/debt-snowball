@@ -133,7 +133,7 @@
         <div>
             @if (snowballs != null && snowballs.Any())
             {
-               <p>We have a snowball!</p>
+               <UserSnowballs user="@user?.Id"  ></UserSnowballs>
 
             }
             else
@@ -171,7 +171,7 @@
         if(user != null)
         {
             debts = DbContext.Debts.Where(d => d.User == user).ToList();
-            snowballs = DbContext.Snowballs.Where(d => d.User == user).ToList();
+            snowballs = DbContext.Snowballas.Where(d => d.User == user).ToList();
         }
 
     }
@@ -195,9 +195,7 @@
 
     private async Task HandleSnowballSubmit()
     {
-        BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(SnowballInput.ExtraPayment, debts);
-
-        Console.WriteLine("Success");
+     
 
         var newSnowball = new Snowballa
         {
@@ -206,9 +204,9 @@
             Debts = debts
         };
 
-DbContext.Snowballs.Add(newSnowball);
+        DbContext.Snowballas.Add(newSnowball);
         await DbContext.SaveChangesAsync();
-        snowballs = DbContext.Snowballs.Where(d => d.User == user).ToList();
+        snowballs = DbContext.Snowballas.Where(d => d.User == user).ToList();
 
     
     }

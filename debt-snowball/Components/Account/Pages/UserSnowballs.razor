@@ -1,0 +1,114 @@
+﻿@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using debt_snowball.Utilities
+
+@using debt_snowball.Data
+@inject ApplicationDbContext DbContexty
+
+
+
+
+@if (Snowballas != null && Snowballas.Any())
+{
+    <table class="table-auto text-xs md:text-lg w-[100%] text-left bg-blue-100 p-8 text-blue-950">
+        <thead class="bg-blue-950 text-gray-200">
+            <tr>
+                <th class="p-2">Extra Payment</th>
+                <th class="p-2">Number of Debts</th>
+                <th class="p-2">totalDebt</th>
+                <th class="p-2">totalPayment</th>
+                <th class="p-2">tootalInterestPaid</th>
+                <th class="p-2">totalMonths</th>
+            </tr>
+        </thead>
+        <tbody class="[&>*:nth-child(even)]:bg-gray-100">
+            @if (!isLoading)
+            {
+                @foreach (var snowballa in Snowballas)
+                {
+                    <tr>
+                        <td class="p-2 max-w-[120px] overflow-auto">@snowballa.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">
+                            @((snowballa.Debts?.Count() ?? 0).ToString())
+                        </td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalDebt</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaid</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
+                    </tr>
+                }
+            }
+            else
+            { @foreach (var snowballa in Snowballas)
+                {
+                    <tr>
+                        <td class="p-2 max-w-[120px] overflow-auto">@snowballa.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">
+                            @((snowballa.Debts?.Count() ?? 0).ToString())
+                        </td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                    </tr>
+                }
+            }
+    
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No snowballs found.</p>
+}
+
+
+
+@code {
+    [Parameter]
+    public string user { get; set; } = default!;
+
+    double totalDebt;
+    double totalPayment;
+    double totalInterestPaid;
+    double totalPaymentsMade;
+    double totalMonths;
+
+    private bool isLoading = false;
+
+
+
+
+    public List<Snowballa> Snowballas { get; set; } = default!;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {   
+        isLoading = true;
+
+        if (user != null)
+        {
+            Snowballas = DbContexty.Snowballas.Where(d => d.User.Id == user).ToList<Snowballa>();
+        }
+
+        Snowballa latest = Snowballas.Last();
+
+        List<Debt> debts = latest.Debts.ToList();
+
+        BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(latest.ExtraPayment, debts);
+
+        totalDebt = startingData.TotalDebt;
+        totalPayment = startingData.TotalPayment;
+        totalInterestPaid = startingData.TotalInterestPaid;
+        totalPaymentsMade = startingData.TotalPaymentsMade;
+        totalMonths = startingData.TotalMonths;
+
+        isLoading = false;
+
+
+
+        Console.WriteLine("wow");
+
+    }
+}

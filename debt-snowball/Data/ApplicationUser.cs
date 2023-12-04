@@ -7,7 +7,7 @@ namespace debt_snowball.Data
     {
         public DateOnly? DateOfBirth { get; set; }
         public ICollection<Debt> Debts { get; set; }
-        public ICollection<Snowballa> Snowballs { get; set; }
+        public ICollection<Snowballa> Snowballas { get; set; }
 
     }
 }
