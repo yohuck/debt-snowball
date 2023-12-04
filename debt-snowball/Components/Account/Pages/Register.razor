@@ -17,41 +17,40 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
 
-<div class="row">
-    <div class="col-md-4">
+
+<div class="">
+    <div class="">
         <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register" class="mt-4 max-w-[450px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center text-white">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <h1 class="text-2xl font-extrabold tacking-tight text-white">Create a new account.</h1>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <div class="flex flex-col w-[100%]">
+                <InputText @bind-Value="Input.Email" class="p-1 text-blue-950" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <div class="flex flex-col w-[100%]">
+                <InputText type="password" @bind-Value="Input.Password" class="p-1 text-blue-950" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="password">Password</label>
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <div class="flex flex-col w-[100%]">
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="p-1 text-blue-950" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
+                <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                    Register
+                    <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+                </span>
+            </button>
         </EditForm>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
+  
 </div>
 
 @code {

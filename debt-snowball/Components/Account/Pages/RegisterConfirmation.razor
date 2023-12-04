@@ -12,16 +12,21 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Register confirmation</h1>
+
 
 <StatusMessage Message="@statusMessage" />
 
 @if (emailConfirmationLink is not null)
 {
-    <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
+    <div class="mt-4 max-w-[450px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col  gap-2 rounded-md shadow-lg items-center text-white">
+        <p>I haven't built the accont confirmation flow yet so...</p>
+        <a class="inline-flex items-center rounded-md shadow-md pt-2" href="@emailConfirmationLink">
+            <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                Click here to confirm your account
+                <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+            </span>
+        </a>
+    </div>
 }
 else
 {

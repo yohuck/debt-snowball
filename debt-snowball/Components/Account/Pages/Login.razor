@@ -12,34 +12,41 @@
 
 <PageTitle>Log in</PageTitle>
 
-<h1>Log in</h1>
+
 <div class="row">
-    <div class="col-md-4">
+    <div class=" ">
+       
         <section>
             <StatusMessage Message="@errorMessage" />
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login" class="mt-4 max-w-[450px] p-4 bg-blue-950 bg-opacity-100 w-[95%] mx-auto flex flex-col gap-2 rounded-md shadow-lg items-center text-white">
+                <h1 class="text-2xl font-extrabold tacking-tight text-white">Log in</h1>
                 <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
                 <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <div class="flex flex-col w-[100%]">
                     <label for="email" class="form-label">Email</label>
+                    <InputText @bind-Value="Input.Email" class="p-1 text-blue-950" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                   
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <div class="flex flex-col w-[100%]">
                     <label for="password" class="form-label">Password</label>
+                    <InputText type="password" @bind-Value="Input.Password" class="p-1 text-blue-950" autocomplete="current-password" aria-required="true" placeholder="password" />
+                   
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
-                <div class="checkbox mb-3">
+                <div class="">
                     <label class="form-label">
                         <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
                         Remember me
                     </label>
                 </div>
                 <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                    <button class="inline-flex items-center rounded-md shadow-md pt-2" type="submit">
+                        <span class="inline-flex items-center justify-center px-5 py-1 border border-transparent text-base font-extrabold rounded-md bg-cyan-50 text-blue-950 hover:bg-blue-100">
+                            Log in
+                            <img src="./yeti.png" alt="Yeti Debt Snowball" class="h-10 w-10" />
+                        </span>
+                    </button>
                 </div>
                 <div>
                     <p>
@@ -55,13 +62,7 @@
             </EditForm>
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
+  
 </div>
 
 @code {

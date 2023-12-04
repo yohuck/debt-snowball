@@ -9,7 +9,7 @@ namespace debt_snowball.Utilities
         public async Task<string> CallYeti(double amount, double months)
         {
             string proxyUrl = "https://aoai.hacktogether.net";
-            string key = "YOUR_KEY";
+            string key = "YOUR_API_KEY";
 
             // the full url is appended by /v1/api
             Uri proxyUri = new(proxyUrl + "/v1/api");
