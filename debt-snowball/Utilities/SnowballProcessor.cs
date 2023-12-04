@@ -65,28 +65,42 @@ namespace debt_snowball.Utilities
         public async static Task<string> CalculateSnowball(double extraPayment, List<Debt> debts)
         {
             double leftOver;
-            List<int> paymentCount = new List<int>();
-            double currentExtraPayment = extraPayment;
+            List<double> paymentCount = new List<double>();
+            List<double> leftoverPayment = new List<double>();
+            double currentExtraPayment = extraPayment * 100;
+
+
 
             foreach (Debt debt in debts)
             {
-                double paymentAmount = debt.MinimumPayment + currentExtraPayment;
-                List<int> clonePaymentCount = paymentCount.ToList();
+                double bal = debt.Balance * 100;
+                List<double> clonePaymentCount = paymentCount.ToList();
                 List<CashFlowLineItemUnknown> paymentList = new List<CashFlowLineItemUnknown>();
                 int day = debt.DueDay;
+                int tester = clonePaymentCount.Count + 1;
 
                 CashFlowLineItemUnknown loan = new CashFlowLineItemUnknown
                 {
-                    Amount = debt.Balance.ToString(),
+                    Amount = bal.ToString(),
                     Event = "Loan",
                     Number = "1",
                     StartDate = DateTime.Now.ToString("yyyy-MM-dd")
                 };
 
                 paymentList.Add(loan);
-
-                do
+                double paymentAmount = currentExtraPayment;
+                while (tester > 0)
                 {
+                    if (clonePaymentCount.FirstOrDefault() > 0)
+                    {
+                        paymentAmount =  debt.MinimumPayment * 100 +   leftoverPayment.FirstOrDefault();
+                        Console.WriteLine("Here");
+
+                    } else
+                    {
+                        paymentAmount = debt.MinimumPayment * 100 + currentExtraPayment;
+                        Console.WriteLine("Hereeee");
+                    }
                     double countOrUnknown = clonePaymentCount.FirstOrDefault();
 
 
@@ -125,8 +139,24 @@ namespace debt_snowball.Utilities
 
                     paymentList.Add(payment);
 
-                    
-                } while (clonePaymentCount.FirstOrDefault() > 0);
+                    if(clonePaymentCount.FirstOrDefault() > 0)
+                    {
+                        clonePaymentCount.RemoveAt(0);
+
+                        if(leftoverPayment.FirstOrDefault() > 0)
+                        {
+                            leftoverPayment.RemoveAt(0);
+                        }
+                  
+
+                    } 
+
+                    tester--;
+
+
+                };
+
+                leftoverPayment = new List<double>();
 
                 CalculateDocument document = new CalculateDocument
                 {
@@ -163,14 +193,32 @@ namespace debt_snowball.Utilities
                                 Console.WriteLine(responseContent);
                                 CalculateResponse aaa = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
 
-                  
-                               
+
+                                List<CashFlowLineItem> numberOfPayments = aaa.CFM.CFM;
+                                foreach (CashFlowLineItem item in numberOfPayments)
+                                {
+                                    if (item.Event == "Payment")
+                                    {
+                                        paymentCount.Add(item.Number);
+                                        if (item.Amount < paymentAmount)
+                                        {
+                                            leftOver = paymentAmount - item.Amount;
+                                            leftoverPayment.Add(leftOver);
+                                        }
+                                        else
+                                        {
+                                            leftoverPayment.Add(0);
+                                        }
+                                    }
+
+
+                                }
 
                                 Console.WriteLine("wowwowowow");
                             }
                             else
                             {
-                                // Log error message or handle it as per your application's error handling policy
+                              
                                 throw new HttpRequestException($"Request failed with status code: {response.StatusCode} and message: {response.ReasonPhrase}");
                             }
                         }
@@ -178,28 +226,29 @@ namespace debt_snowball.Utilities
                 }
                 catch (HttpRequestException ex)
                 {
-                    // Handle HTTP request related errors here
+          
                     Console.WriteLine($"An error occurred while sending the request: {ex.Message}");
                     throw;
                 }
                 catch (JsonException ex)
                 {
-                    // Handle JSON deserialization errors here
+              
                     Console.WriteLine($"An error occurred while deserializing the response: {ex.Message}");
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    // Handle other unforeseen errors
+               
                     Console.WriteLine($"An unexpected error occurred: {ex.Message}");
                     throw;
                 }
 
                 Console.WriteLine("Wow");
-
+                currentExtraPayment += debt.MinimumPayment * 100;
 
             }
 
+         
 
             return "Wow";
         }
