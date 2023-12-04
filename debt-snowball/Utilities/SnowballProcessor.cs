@@ -73,6 +73,7 @@ namespace debt_snowball.Utilities
 
             foreach (Debt debt in debts)
             {
+                double addMonths = 0;
                 double bal = debt.Balance * 100;
                 List<double> clonePaymentCount = paymentCount.ToList();
                 List<CashFlowLineItemUnknown> paymentList = new List<CashFlowLineItemUnknown>();
@@ -87,12 +88,15 @@ namespace debt_snowball.Utilities
                     StartDate = DateTime.Now.ToString("yyyy-MM-dd")
                 };
 
+               
+            
+
                 paymentList.Add(loan);
                 double paymentAmount = currentExtraPayment;
                 int extraPaymentCount = 0;
                 while (tester > 0)
                 {
-                    if (clonePaymentCount.FirstOrDefault() > 0)
+                    if (clonePaymentCount.Count > 0)
                     {
                         try
                         {
@@ -106,8 +110,7 @@ namespace debt_snowball.Utilities
                             paymentAmount = debt.MinimumPayment * 100;
                         }
                         
-                     
-                        Console.WriteLine("Here");
+                 
 
                     } else
                     {
@@ -145,6 +148,8 @@ namespace debt_snowball.Utilities
 
                     string dayOfMonthString = day.ToString("00");
                     string monthString = month.ToString("00");
+                    string preAddMonths = $"{year}-{monthString}-{dayOfMonthString}";
+                    string postAddMonths = DateHelper.AddMonths(preAddMonths, (int)addMonths);
                     string countOrUnknownString = countOrUnknown == 0 ? "Unknown" : countOrUnknown.ToString();
 
                     CashFlowLineItemUnknown payment = new CashFlowLineItemUnknown
@@ -153,13 +158,15 @@ namespace debt_snowball.Utilities
                         Event = "Payment",
                         Number = countOrUnknownString,
                         Period = "Monthly",
-                        StartDate = $"{year}-{monthString}-{dayOfMonthString}"
+                        StartDate = postAddMonths
                     };
 
                     paymentList.Add(payment);
 
                     if(clonePaymentCount.FirstOrDefault() > 0)
                     {
+                        addMonths += clonePaymentCount.FirstOrDefault();
+
                         clonePaymentCount.RemoveAt(0);
 
                      
@@ -187,7 +194,7 @@ namespace debt_snowball.Utilities
 
                 CalculateRequest request = new CalculateRequest
                 {
-                    CustomerId = "6496711075109280261",
+                    CustomerId = "YOUR_API_KEY",
                     CreateAmSchedule = false,
                     RoundingType = "Balloon",
                     SpecificLine = "2",
@@ -278,7 +285,7 @@ namespace debt_snowball.Utilities
 
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
-            var CustomerId = "6496711075109280261";
+            var CustomerId = "YOUR_API_KEY";
             string today = DateTime.Now.ToString("yyyy-MM-dd");
 
             int dayOfMonth = DateTime.Now.Day;
