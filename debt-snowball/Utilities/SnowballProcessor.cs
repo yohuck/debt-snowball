@@ -89,18 +89,37 @@ namespace debt_snowball.Utilities
 
                 paymentList.Add(loan);
                 double paymentAmount = currentExtraPayment;
+                int extraPaymentCount = 0;
                 while (tester > 0)
                 {
                     if (clonePaymentCount.FirstOrDefault() > 0)
                     {
-                        paymentAmount =  debt.MinimumPayment * 100 +   leftoverPayment.FirstOrDefault();
+                        try
+                        {
+                            paymentAmount = debt.MinimumPayment * 100 + leftoverPayment.FirstOrDefault();
+                            if(leftoverPayment.Count > 0)
+                            {
+                                leftoverPayment.RemoveAt(0);
+                            }
+                        } catch
+                        {
+                            paymentAmount = debt.MinimumPayment * 100;
+                        }
+                        
+                     
                         Console.WriteLine("Here");
 
                     } else
                     {
                         paymentAmount = debt.MinimumPayment * 100 + currentExtraPayment;
                         Console.WriteLine("Hereeee");
+                        if (leftoverPayment.Count > 0)
+                        {
+                            leftoverPayment.RemoveAt(0);
+                        }
+
                     }
+                    extraPaymentCount++;
                     double countOrUnknown = clonePaymentCount.FirstOrDefault();
 
 
@@ -143,10 +162,7 @@ namespace debt_snowball.Utilities
                     {
                         clonePaymentCount.RemoveAt(0);
 
-                        if(leftoverPayment.FirstOrDefault() > 0)
-                        {
-                            leftoverPayment.RemoveAt(0);
-                        }
+                     
                   
 
                     } 
@@ -157,6 +173,7 @@ namespace debt_snowball.Utilities
                 };
 
                 leftoverPayment = new List<double>();
+                paymentCount = new List<double>();
 
                 CalculateDocument document = new CalculateDocument
                 {
@@ -170,7 +187,7 @@ namespace debt_snowball.Utilities
 
                 CalculateRequest request = new CalculateRequest
                 {
-                    CustomerId = "YOUR_API_KEY",
+                    CustomerId = "6496711075109280261",
                     CreateAmSchedule = false,
                     RoundingType = "Balloon",
                     SpecificLine = "2",
@@ -195,12 +212,15 @@ namespace debt_snowball.Utilities
 
 
                                 List<CashFlowLineItem> numberOfPayments = aaa.CFM.CFM;
+                                int length = numberOfPayments.Count - 1;
+                                int index = 0;
+                             
                                 foreach (CashFlowLineItem item in numberOfPayments)
                                 {
                                     if (item.Event == "Payment")
                                     {
                                         paymentCount.Add(item.Number);
-                                        if (item.Amount < paymentAmount)
+                                        if (index == length && item.Amount < paymentAmount)
                                         {
                                             leftOver = paymentAmount - item.Amount;
                                             leftoverPayment.Add(leftOver);
@@ -209,7 +229,10 @@ namespace debt_snowball.Utilities
                                         {
                                             leftoverPayment.Add(0);
                                         }
+
+
                                     }
+                                    index++;
 
 
                                 }
@@ -218,7 +241,7 @@ namespace debt_snowball.Utilities
                             }
                             else
                             {
-                              
+                                // Log error message or handle it as per your application's error handling policy
                                 throw new HttpRequestException($"Request failed with status code: {response.StatusCode} and message: {response.ReasonPhrase}");
                             }
                         }
@@ -255,7 +278,7 @@ namespace debt_snowball.Utilities
 
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)
         {
-            var CustomerId = "YOUR_API_KEY";
+            var CustomerId = "6496711075109280261";
             string today = DateTime.Now.ToString("yyyy-MM-dd");
 
             int dayOfMonth = DateTime.Now.Day;
