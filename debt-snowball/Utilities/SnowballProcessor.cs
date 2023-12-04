@@ -62,11 +62,13 @@ namespace debt_snowball.Utilities
             };
         }
 
-        public async static Task<string> CalculateSnowball(double extraPayment, List<Debt> debts)
+        public async static Task<List<CalculateResponse>> CalculateSnowball(double extraPayment, List<Debt> debts)
         {
             double leftOver;
             List<double> paymentCount = new List<double>();
             List<double> leftoverPayment = new List<double>();
+            List<CalculateResponse> responseList = new List<CalculateResponse>();
+
             double currentExtraPayment = extraPayment * 100;
 
 
@@ -195,7 +197,7 @@ namespace debt_snowball.Utilities
                 CalculateRequest request = new CalculateRequest
                 {
                     CustomerId = "YOUR_API_KEY",
-                    CreateAmSchedule = false,
+                    CreateAmSchedule = true,
                     RoundingType = "Balloon",
                     SpecificLine = "2",
                     LineAdjustment = "AllAmounts",
@@ -216,6 +218,7 @@ namespace debt_snowball.Utilities
                                 string responseContent = await response.Content.ReadAsStringAsync();
                                 Console.WriteLine(responseContent);
                                 CalculateResponse aaa = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
+                                responseList.Add(aaa);
 
 
                                 List<CashFlowLineItem> numberOfPayments = aaa.CFM.CFM;
@@ -280,7 +283,7 @@ namespace debt_snowball.Utilities
 
          
 
-            return "Wow";
+            return responseList;
         }
 
         private static async Task<CalculateResponse> CallCalculate(double balance, double payment, int day, double rate)

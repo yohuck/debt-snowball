@@ -14,12 +14,10 @@
     <table class="table-auto text-xs md:text-lg w-[100%] text-left bg-blue-100 p-8 text-blue-950">
         <thead class="bg-blue-950 text-gray-200">
             <tr>
-                <th class="p-2">Extra Payment</th>
-                <th class="p-2">Number of Debts</th>
-                <th class="p-2">totalDebt</th>
-                <th class="p-2">totalPayment</th>
-                <th class="p-2">tootalInterestPaid</th>
-                <th class="p-2">totalMonths</th>
+                <th class="p-2">Payment Method</th>
+                <th class="p-2">Total of Payments</th>
+                <th class="p-2">Total Finance Charge</th>
+                <th class="p-2">Total Months</th>
             </tr>
         </thead>
         <tbody class="[&>*:nth-child(even)]:bg-gray-100">
@@ -27,34 +25,70 @@
             {
                
                     <tr>
-                        <td class="p-2 max-w-[120px] overflow-auto">@lastSnowball.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Minimum Payment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            @((lastSnowball.Debts?.Count() ?? 0).ToString())
+                            @(totalInterestPaid + totalDebt)
                         </td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalDebt</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalPayment</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaid</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaid</td>
                         <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
+           
+                    </tr>
+                    <tr>
+                        <td class="p-2 max-w-[120px] overflow-auto">$@lastSnowball.ExtraPayment more /Month</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">
+                            @(Math.Round(totalPaymentsFromSnowball,2))
+                        </td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalInterestPaidFromSnowball</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@totalMonthsFromSnowball</td>
                     </tr>
                 
             }
             else
             { 
                     <tr>
-                        <td class="p-2 max-w-[120px] overflow-auto">@lastSnowball.ExtraPayment</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">Minimum Payment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
                             @((lastSnowball.Debts?.Count() ?? 0).ToString())
                         </td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
                         <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                    
                     </tr>
+                <tr>
+                    <td class="p-2 max-w-[120px] overflow-auto">$@lastSnowball.ExtraPayment more /Month</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">
+                        Calculating...
+                    </td>
+                    <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">Calculating...</td>
+
+                </tr>
                 
             }
     
         </tbody>
     </table>
+    if (isLoading)
+    {   <div class="flex">
+        <div class="mx-auto flex max-w-[600px] justify-between items-center h-[300px]">
+            <p class="text-2xl text-blue-950 font-extrabold">I'm crunching the numbers for you!</p>
+            <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square transform -scale-x-100" />
+            
+        </div>
+        </div>
+    }
+    else
+    {
+        <div class="flex">
+            <div class="mx-auto flex max-w-[600px] justify-between items-center h-[300px]">
+                <p class="text-2xl text-blue-950 font-extrabold">Wow! You will save $@(Math.Round(totalSaved, 2)) over the course of @monthsSaved months!</p>
+                <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[80%] max-w-[300px] aspect-square transform -scale-x-100" />
+
+            </div>
+        </div>
+      
+       
+    }
 }
 else
 {
@@ -72,6 +106,13 @@ else
     double totalInterestPaid;
     double totalPaymentsMade;
     double totalMonths;
+
+    double totalPaymentsFromSnowball;
+    double totalInterestPaidFromSnowball;
+    double totalMonthsFromSnowball;
+
+    double totalSaved;
+    double monthsSaved;
 
     private bool isLoading = false;
     Snowballa lastSnowball;
@@ -100,19 +141,29 @@ else
 
         totalDebt = startingData.TotalDebt;
         totalPayment = startingData.TotalPayment;
-        totalInterestPaid = startingData.TotalInterestPaid;
-        totalPaymentsMade = startingData.TotalPaymentsMade;
+        totalInterestPaid = startingData.TotalInterestPaid / 100;
+        totalPaymentsMade = startingData.TotalPaymentsMade / 100;
         totalMonths = startingData.TotalMonths;
+
+       
 
         isLoading = false;
 
 
+        List<CalculateResponse> test = await SnowballProcessor.CalculateSnowball(lastSnowball.ExtraPayment, debts);
 
-        Console.WriteLine("wow");
+        foreach (CalculateResponse response in test)
+        {
+            totalPaymentsFromSnowball += response.Amortization.APR.TotalOfPayments / 100;
+            totalInterestPaidFromSnowball += response.Amortization.APR.FinanceCharge /100;
+        }
 
-        string test = await SnowballProcessor.CalculateSnowball(lastSnowball.ExtraPayment, debts);
+        totalMonthsFromSnowball = test.Last<CalculateResponse>().Amortization.AmortizationTable.Count(i => i.AmortizationLineType == "Payment");
 
         Console.WriteLine("really wow!");
+
+        totalSaved = totalInterestPaid - totalInterestPaidFromSnowball;
+        monthsSaved = totalMonths - totalMonthsFromSnowball;
 
     }
 }

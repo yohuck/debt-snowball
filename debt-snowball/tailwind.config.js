@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./**/*.{razor,html}'],
   theme: {
-    extend: {},
+      extend: {
+          scale: {
+              '-100': '-1',
+          }
+      }
   },
   plugins: [],
 }
