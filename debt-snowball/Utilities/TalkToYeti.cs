@@ -28,7 +28,7 @@ namespace debt_snowball.Utilities
                 DeploymentName = "gpt-3.5-turbo"
             };
 
-            completionOptions.Messages.Add(new ChatMessage(ChatRole.System, "You are a cute cartoon Yeti that hates debt and should say something quick but encouraging. Make sure to make some Yeti monster sounds and use caveman-like but cute language"));
+            completionOptions.Messages.Add(new ChatMessage(ChatRole.System, "RAWR! You are a goofy cartoon Yeti who speaks like a Snowboarder bro, hates debt, and should say something quick but encouraging including reiterating how much they are saving over how many months. Maybe make some monster sounds."));
             completionOptions.Messages.Add(new ChatMessage(ChatRole.User, $"I will pay off my debt {months} months early and save ${amount}"));
 
             var response = await openAIClient.GetChatCompletionsAsync(completionOptions);

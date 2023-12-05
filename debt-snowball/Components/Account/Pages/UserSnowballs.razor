@@ -27,10 +27,10 @@
                     <tr>
                         <td class="p-2 max-w-[120px] overflow-auto">Minimum Payment</td>
                         <td class="p-2 max-w-[120px] overflow-auto">
-                            $@(totalInterestPaid + totalDebt)
+                            $@(Math.Round((totalInterestPaid + totalDebt),2))
                         </td>
-                    <td class="p-2 max-w-[120px] overflow-auto">$@totalInterestPaid</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">$@(Math.Round(totalInterestPaid,2))</td>
+                    <td class="p-2 max-w-[120px] overflow-auto">@totalMonths</td>
            
                     </tr>
                     <tr>
@@ -38,8 +38,8 @@
                         <td class="p-2 max-w-[120px] overflow-auto">
                            $@(Math.Round(totalPaymentsFromSnowball,2))
                         </td>
-                        <td class="p-2 max-w-[120px] overflow-auto">$@totalInterestPaidFromSnowball</td>
-                        <td class="p-2 max-w-[120px] overflow-auto">@totalMonthsFromSnowball</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">$@(Math.Round(totalInterestPaidFromSnowball,2))</td>
+                        <td class="p-2 max-w-[120px] overflow-auto">@(Math.Round(totalMonthsFromSnowball,2))</td>
                     </tr>
                 
             }
@@ -74,9 +74,17 @@
             <div class="">
                 <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[40px] md:w-[200px] aspect-square" />
             </div>
-            <p class="w-full bg-white border-2 border-blue-950 text-blue-950 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg">
-                I'm calculating your savings. Just give me one second. You see, I'm a Yeti and it takes me a little longer to do things. I sure do hate debt though. YARRRRGHHHH.
-            </p>
+            <div class="w-full bg-white border-2 border-blue-950 text-blue-950 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg flex items-center justify-center">
+               
+                   
+                    <p>
+                        I'm calculating your savings. Just give me one second. You see, I'm a Yeti and it takes me a little longer to do things.I sure do hate debt though.YARRRRGHHHH.
+                    </p>
+                   
+                  
+               
+            </div>
+       
         </div>
 
       
@@ -87,9 +95,11 @@
             <div class="">
                 <img src="./yeti.png" alt="Yeti Debt Snowball" class="w-[40px] md:w-[200px] aspect-square" />
             </div>
-            <p class="w-full bg-white border-2 border-blue-950 text-blue-950 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg">
+            <d class="w-full bg-white border-2 border-blue-950 text-blue-950 rounded-lg px-4 py-2 -top-10 right-0 mr-2 shadow-lg flex items-center justify-center">
+                <p>
                @messageFromYeti
-            </p>
+                </p>
+            </d>
         </div>
 
       
@@ -119,10 +129,11 @@ else
 
     double totalSaved;
     double monthsSaved;
+    bool loading_second = false;
 
     string messageFromYeti;
 
-    private bool isLoading = false;
+    private bool isLoading = true;
     Snowballa lastSnowball;
 
 
@@ -134,7 +145,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {   
-        isLoading = true;
+        
+       
 
         if (user != null)
         {
@@ -143,7 +155,8 @@ else
 
         lastSnowball = Snowballas.Last();
 
-        List<Debt> debts = lastSnowball.Debts.ToList();
+        List<Debt> debts = lastSnowball.Debts.OrderBy(debt => debt.Balance).ToList();
+
 
         BaseSnowballNumbers startingData = await SnowballProcessor.ProcessSnowball(lastSnowball.ExtraPayment, debts);
 
@@ -168,8 +181,6 @@ else
 
         totalMonthsFromSnowball = test.Last<CalculateResponse>().Amortization.AmortizationTable.Count(i => i.AmortizationLineType == "Payment");
 
-        Console.WriteLine("really wow!");
-
         totalSaved = totalInterestPaid - totalInterestPaidFromSnowball;
         monthsSaved = totalMonths - totalMonthsFromSnowball;
         TalkToYeti talkToYeti = new TalkToYeti();
@@ -179,4 +190,6 @@ else
         messageFromYeti = yetiMessage;
 
     }
+
+    
 }

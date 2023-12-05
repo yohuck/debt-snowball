@@ -49,8 +49,6 @@ namespace debt_snowball.Utilities
                 totalMonths = Math.Max(totalMonths, paymentCount);
             }
 
-            Console.WriteLine(totalPayment);
-            Console.WriteLine(totalDebt);
 
             return new BaseSnowballNumbers
             {
@@ -117,7 +115,7 @@ namespace debt_snowball.Utilities
                     } else
                     {
                         paymentAmount = debt.MinimumPayment * 100 + currentExtraPayment;
-                        Console.WriteLine("Hereeee");
+                  
                         if (leftoverPayment.Count > 0)
                         {
                             leftoverPayment.RemoveAt(0);
@@ -216,7 +214,6 @@ namespace debt_snowball.Utilities
                             if (response.IsSuccessStatusCode)
                             {
                                 string responseContent = await response.Content.ReadAsStringAsync();
-                                Console.WriteLine(responseContent);
                                 CalculateResponse aaa = JsonSerializer.Deserialize<CalculateResponse>(responseContent);
                                 responseList.Add(aaa);
 
@@ -246,8 +243,6 @@ namespace debt_snowball.Utilities
 
 
                                 }
-
-                                Console.WriteLine("wowwowowow");
                             }
                             else
                             {
@@ -276,7 +271,6 @@ namespace debt_snowball.Utilities
                     throw;
                 }
 
-                Console.WriteLine("Wow");
                 currentExtraPayment += debt.MinimumPayment * 100;
 
             }
